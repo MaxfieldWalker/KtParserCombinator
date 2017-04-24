@@ -1,4 +1,4 @@
-import parser.andThen
+import parser.orElese
 import parser.pchar
 import parser.run
 
@@ -10,7 +10,7 @@ import parser.run
 fun main(args: Array<String>) {
     val parseA = pchar('A')
     val parseB = pchar('B')
-    val parseAThenB = andThen(parseA, parseB)
-    val result = run(parseAThenB, "ACD")
+    val parseAOrElseB = orElese(parseA, parseB)
+    val result = run(parseAOrElseB, "ABC")
     println(result)
 }

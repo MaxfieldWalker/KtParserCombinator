@@ -31,7 +31,7 @@ fun <T> run(parser: Parser<T>, str: String): Result<T> {
     return parser(str)
 }
 
-fun <T1, T2> andThen(parser1: Parser<T1>, parser2: Parser<T2>): Parser<Pair<T1, T2>> {
+fun <T> andThen(parser1: Parser<T>, parser2: Parser<T>): Parser<Pair<T, T>> {
     val innerFn = { str: String ->
         // 1つ目のパーサーを適用
         val result1 = run(parser1, str)
@@ -41,6 +41,20 @@ fun <T1, T2> andThen(parser1: Parser<T1>, parser2: Parser<T2>): Parser<Pair<T1, 
         // パース結果を結合
         val newValue = Pair(result1.value, result2.value)
         Result(newValue, result2.remaining)
+    }
+
+    return innerFn
+}
+
+fun <T> orElese(parser1: Parser<T>, parser2: Parser<T>): Parser<T> {
+    val innerFn = { str: String ->
+        try {
+            val result1 = run(parser1, str)
+            result1
+        } catch (ex1: Exception) {
+            val result2 = run(parser2, str)
+            result2
+        }
     }
 
     return innerFn
