@@ -1,3 +1,4 @@
+import parser.andThen
 import parser.pchar
 import parser.run
 
@@ -7,7 +8,9 @@ import parser.run
 
 
 fun main(args: Array<String>) {
-    val aParser = pchar('A')
-    val result = run(aParser, "ABC")
+    val parseA = pchar('A')
+    val parseB = pchar('B')
+    val parseAThenB = andThen(parseA, parseB)
+    val result = run(parseAThenB, "ACD")
     println(result)
 }
