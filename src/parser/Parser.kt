@@ -46,7 +46,7 @@ fun <T> andThen(parser1: Parser<T>, parser2: Parser<T>): Parser<Pair<T, T>> {
     return innerFn
 }
 
-fun <T> orElese(parser1: Parser<T>, parser2: Parser<T>): Parser<T> {
+fun <T> orElse(parser1: Parser<T>, parser2: Parser<T>): Parser<T> {
     val innerFn = { str: String ->
         try {
             val result1 = run(parser1, str)
@@ -58,4 +58,13 @@ fun <T> orElese(parser1: Parser<T>, parser2: Parser<T>): Parser<T> {
     }
 
     return innerFn
+}
+
+fun <T> choice(listOfParsers: List<Parser<T>>): Parser<T> {
+    return listOfParsers.reduce { p1, p2 -> orElse(p1, p2) }
+}
+
+fun anyOf(listOfChars: List<Char>): Parser<Char> {
+    val parsers = listOfChars.map(::pchar)
+    return choice(parsers)
 }

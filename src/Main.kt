@@ -1,5 +1,4 @@
-import parser.orElese
-import parser.pchar
+import parser.anyOf
 import parser.run
 
 /**
@@ -8,9 +7,11 @@ import parser.run
 
 
 fun main(args: Array<String>) {
-    val parseA = pchar('A')
-    val parseB = pchar('B')
-    val parseAOrElseB = orElese(parseA, parseB)
-    val result = run(parseAOrElseB, "ABC")
-    println(result)
+    val lowercase = ('a'..'z').toList()
+    val digits = ('0'..'9').toList()
+    val parseLowercase = anyOf(lowercase)
+    val parseDigit = anyOf(digits)
+
+    val result1 = run(parseLowercase, "abc")
+    val result2 = run(parseDigit, "123")
 }
