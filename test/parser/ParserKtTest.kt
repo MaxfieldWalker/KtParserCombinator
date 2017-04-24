@@ -10,7 +10,5 @@ import org.junit.Assert.*
 class ParserKtTest {
     @Test
     fun aParser() {
-        val result = aParser("ABC")
-        assertEquals(result, Result(true, "BC"))
     }
 }

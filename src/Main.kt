@@ -1,10 +1,13 @@
+import parser.pchar
+import parser.run
+
 /**
  * Created by n-isida on 2017/04/20.
  */
 
-import parser.aParser
 
-fun main(args:Array<String>){
-    val result = aParser("ABC")
+fun main(args: Array<String>) {
+    val aParser = pchar('A')
+    val result = run(aParser, "ABC")
     println(result)
 }
