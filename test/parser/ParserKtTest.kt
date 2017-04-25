@@ -63,4 +63,20 @@ class ParserKtTest {
         val result2 = run(parseDigit, "123")
         assertEquals(Result('1', "23"), result2)
     }
+
+    @Test
+    fun mapPTest() {
+        val parseDigit = anyOf(('0'..'9').toList())
+        val tupleParser = andThen(andThen(parseDigit, parseDigit), parseDigit)
+
+        val transformPair = fun(pair: Pair<Pair<Char, Char>, Char>): String {
+            val (first, second) = pair.first
+            val third = pair.second
+            return first.toString() + second + third
+        }
+        val p = mapP(transformPair, tupleParser)
+
+        val result = parser.run(p, "123A")
+        assertEquals(Result("123", "A"), result)
+    }
 }

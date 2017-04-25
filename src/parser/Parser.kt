@@ -27,7 +27,7 @@ fun <T> run(parser: Parser<T>, str: String): Result<T> {
     return parser(str)
 }
 
-fun <T> andThen(parser1: Parser<T>, parser2: Parser<T>): Parser<Pair<T, T>> {
+fun <T1, T2> andThen(parser1: Parser<T1>, parser2: Parser<T2>): Parser<Pair<T1, T2>> {
     val innerFn = { str: String ->
         // 1つ目のパーサーを適用
         val result1 = run(parser1, str)
@@ -63,4 +63,15 @@ fun <T> choice(listOfParsers: List<Parser<T>>): Parser<T> {
 fun anyOf(listOfChars: List<Char>): Parser<Char> {
     val parsers = listOfChars.map(::pchar)
     return choice(parsers)
+}
+
+fun <T1, T2> mapP(f: (T1) -> T2, parser: Parser<T1>): Parser<T2> {
+    val innerFn = { str: String ->
+        val result = run(parser, str)
+
+        val newValue = f(result.value)
+        Result(newValue, result.remaining)
+    }
+
+    return innerFn
 }
