@@ -14,4 +14,16 @@ class ParserKtTest {
 
         assertEquals(Result('A', "BC"), result)
     }
+
+    @Test
+    fun andThenTest() {
+        val parseA = pchar('A')
+        val parseB = pchar('B')
+
+        val parseAAndThenB = andThen(parseA, parseB)
+
+        val result = parser.run(parseAAndThenB, "ABC")
+
+        assertEquals(Result(Pair('A', 'B'), "C"), result)
+    }
 }
