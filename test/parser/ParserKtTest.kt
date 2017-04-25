@@ -26,4 +26,17 @@ class ParserKtTest {
 
         assertEquals(Result(Pair('A', 'B'), "C"), result)
     }
+
+    @Test
+    fun orElseTest() {
+        val parseA = pchar('A')
+        val parseB = pchar('B')
+        val parseAOrElseB = orElse(parseA, parseB)
+
+        val result1 = parser.run(parseAOrElseB, "ABC")
+        assertEquals(Result('A', "BC"), result1)
+
+        val result2 = parser.run(parseAOrElseB, "BBC")
+        assertEquals(Result('B', "BC"), result2)
+    }
 }
