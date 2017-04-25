@@ -1,0 +1,15 @@
+# ビルドでdockerコンテナが使用されるようにする
+sudo: false
+
+language: java
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+# codecovにカバレッジ測定結果を送る
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
