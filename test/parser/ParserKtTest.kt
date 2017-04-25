@@ -52,4 +52,18 @@ class ParserKtTest {
         val result2 = parser.run(parseAOrElseB, "BBC")
         assertEquals(Result('B', "BC"), result2)
     }
+
+    @Test
+    fun anyOfTest() {
+        val lowercase = ('a'..'z').toList()
+        val digits = ('0'..'9').toList()
+
+        val parseLowercase = anyOf(lowercase)
+        val result1 = run(parseLowercase, "abc")
+        assertEquals(Result('a', "bc"), result1)
+
+        val parseDigit = anyOf(digits)
+        val result2 = run(parseDigit, "123")
+        assertEquals(Result('1', "23"), result2)
+    }
 }
