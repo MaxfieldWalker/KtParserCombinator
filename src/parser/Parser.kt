@@ -1,9 +1,5 @@
 package parser
 
-/**
- * Created by n-isida on 2017/04/20.
- */
-
 data class Result<T>(val value: T, val remaining: String)
 typealias  Parser<T> = (String) -> Result<T>
 
