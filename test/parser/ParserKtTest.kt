@@ -79,4 +79,26 @@ class ParserKtTest {
         val result = parser.run(p, "123A")
         assertEquals(Result("123", "A"), result)
     }
+
+    @Test
+    fun sequenceTest() {
+        val parsers = listOf(
+                pchar('A'), pchar('B'), pchar('C')
+        )
+        val combined = sequence(parsers)
+
+        val result = parser.run(combined, "ABCD")
+        assertEquals(Result(listOf('A', 'B', 'C'), "D"), result)
+    }
+
+    @Test
+    fun sequenceRecTest() {
+        val parsers = listOf(
+                pchar('A'), pchar('B'), pchar('C')
+        )
+        val combined = sequenceRec(parsers)
+
+        val result = parser.run(combined, "ABCD")
+        assertEquals(Result(listOf('A', 'B', 'C'), "D"), result)
+    }
 }

@@ -75,3 +75,63 @@ fun <T1, T2> mapP(f: (T1) -> T2, parser: Parser<T1>): Parser<T2> {
 
     return innerFn
 }
+
+fun <T> returnP(x: T): Parser<T> {
+    val innerFn = { str: String ->
+        Result(x, str)
+    }
+
+    return innerFn
+}
+
+fun <T1, T2> applyP(fP: Parser<(T1) -> T2>, xP: Parser<T1>): Parser<T2> {
+    val andThen = andThen(fP, xP)
+    val f = fun(pair: Pair<(T1) -> T2, T1>): T2 {
+        val (f, x) = pair
+        return f(x)
+    }
+
+    return mapP(f, andThen)
+}
+
+fun <T1, T2, T3> lift2(f: (T1) -> (T2) -> T3, xP: Parser<T1>, yP: Parser<T2>): Parser<T3> {
+    val p1 = applyP(returnP(f), xP)
+    val p2 = applyP(p1, yP)
+    return p2
+}
+
+fun <T> sequence(parserList: List<Parser<T>>): Parser<List<T>> {
+    val innerFn = { str: String ->
+        var s = str
+
+        val mapped = parserList.map { p ->
+            val result = run(p, s)
+            s = result.remaining
+            result.value
+        }
+
+        Result(mapped, s)
+    }
+
+    return innerFn
+}
+
+// tailrec: 末尾再帰
+tailrec fun <T> sequenceRec(parserList: List<Parser<T>>): Parser<ArrayList<T>> {
+    val cons = { head: T ->
+        { tail: ArrayList<T> ->
+            tail.add(0, head)
+            tail
+        }
+    }
+
+    if (parserList.size == 0) {
+        val emptyList = arrayListOf<T>()
+        return returnP(emptyList)
+    } else {
+        val head = parserList[0]
+        val tail = parserList.subList(1, parserList.size)
+
+        return lift2(cons, head, sequenceRec(tail))
+    }
+}
