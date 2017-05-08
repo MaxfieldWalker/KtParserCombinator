@@ -3,7 +3,7 @@ package parser
 data class Result<T>(val value: T, val remaining: String)
 typealias  Parser<T> = (String) -> Result<T>
 
-fun pchar(charToMatch: Char): (String) -> Result<Char> {
+fun pchar(charToMatch: Char): Parser<Char> {
     val innerFn = { str: String ->
         if (str.isNullOrEmpty()) {
             val message = "No more input"
@@ -134,4 +134,37 @@ tailrec fun <T> sequenceRec(parserList: List<Parser<T>>): Parser<ArrayList<T>> {
 
         return lift2(cons, head, sequenceRec(tail))
     }
+}
+
+fun pstring(str: String): Parser<String> {
+    val a = str.toCharArray().map(::pchar)
+    val b = sequence(a)
+
+    val charListToStr = { charList: List<Char> ->
+        charList.map(Char::toString)
+                .reduce { a: String, b: String -> a + b }
+    }
+
+    return mapP(charListToStr, b)
+}
+
+fun <T> parseZeroOrMore(parser: Parser<T>, input: String): Result<ArrayList<T>> {
+    try {
+        val (value, remaining) = run(parser, input)
+        val (subsequenceValues, remainingInput) = parseZeroOrMore(parser, remaining)
+        subsequenceValues.add(0, value)
+        return Result(subsequenceValues, remainingInput)
+    } catch (ex: Exception) {
+        // いつか必ず失敗する
+        return Result(arrayListOf<T>(), input)
+    }
+}
+
+fun <T> many(parser: Parser<T>): Parser<ArrayList<T>> {
+    val innerFn = { str: String ->
+        val result = parseZeroOrMore(parser, str)
+        result
+    }
+
+    return innerFn
 }

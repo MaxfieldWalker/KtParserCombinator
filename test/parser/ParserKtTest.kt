@@ -101,4 +101,22 @@ class ParserKtTest {
         val result = parser.run(combined, "ABCD")
         assertEquals(Result(listOf('A', 'B', 'C'), "D"), result)
     }
+
+
+    @Test
+    fun pstringTest() {
+        val parserABC = pstring("ABC")
+
+        val result = parser.run(parserABC, "ABCDE")
+        assertEquals(Result("ABC", "DE"), result)
+    }
+
+    @Test
+    fun manyTest() {
+        val aParser = pchar('a')
+        val manyA = many(aParser)
+
+        val result = parser.run(manyA, "aaab")
+        assertEquals(Result(arrayListOf('a', 'a', 'a'), "b"), result)
+    }
 }
