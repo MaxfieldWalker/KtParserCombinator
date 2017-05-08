@@ -1,5 +1,7 @@
 package parser
 
+import java.util.*
+
 data class Result<T>(val value: T, val remaining: String)
 typealias  Parser<T> = (String) -> Result<T>
 
@@ -175,6 +177,19 @@ fun <T> many1(parser: Parser<T>): Parser<ArrayList<T>> {
         val result = parseZeroOrMore(parser, remaining)
         result.value.add(0, value)
         Result(result.value, result.remaining)
+    }
+
+    return innerFn
+}
+
+fun <T> opt(parser: Parser<T>): Parser<T?> {
+    val innerFn = { str: String ->
+        try {
+            val result = run(parser, str)
+            result as Result<T?>
+        } catch (ex: Exception) {
+            Result(null, str) as Result<T?>
+        }
     }
 
     return innerFn

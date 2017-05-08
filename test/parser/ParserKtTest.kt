@@ -128,4 +128,13 @@ class ParserKtTest {
         val result = parser.run(many1A, "ab")
         assertEquals(Result(arrayListOf('a'), "b"), result)
     }
+
+    @Test
+    fun optTest() {
+        val aParser = pchar('a')
+        val optA = opt(aParser)
+
+        val result = parser.run(optA, "b")
+        assertEquals(Result(null, "b"), result)
+    }
 }
