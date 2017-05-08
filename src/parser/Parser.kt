@@ -168,3 +168,14 @@ fun <T> many(parser: Parser<T>): Parser<ArrayList<T>> {
 
     return innerFn
 }
+
+fun <T> many1(parser: Parser<T>): Parser<ArrayList<T>> {
+    val innerFn = { str: String ->
+        val (value, remaining) = run(parser, str)
+        val result = parseZeroOrMore(parser, remaining)
+        result.value.add(0, value)
+        Result(result.value, result.remaining)
+    }
+
+    return innerFn
+}

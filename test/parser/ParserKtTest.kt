@@ -119,4 +119,13 @@ class ParserKtTest {
         val result = parser.run(manyA, "aaab")
         assertEquals(Result(arrayListOf('a', 'a', 'a'), "b"), result)
     }
+
+    @Test
+    fun many1Test() {
+        val aParser = pchar('a')
+        val many1A = many1(aParser)
+
+        val result = parser.run(many1A, "ab")
+        assertEquals(Result(arrayListOf('a'), "b"), result)
+    }
 }
