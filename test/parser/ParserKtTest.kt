@@ -137,4 +137,13 @@ class ParserKtTest {
         val result = parser.run(optA, "b")
         assertEquals(Result(null, "b"), result)
     }
+
+    @Test
+    fun betweenTest() {
+        val doublequote = pchar('\"')
+        val quotedInteger = between(doublequote, pint(), doublequote)
+
+        val result = parser.run(quotedInteger, "\"12345\"")
+        assertEquals(Result(12345, ""), result)
+    }
 }

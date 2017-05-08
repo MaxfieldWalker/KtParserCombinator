@@ -1,7 +1,5 @@
 package parser
 
-import java.util.*
-
 data class Result<T>(val value: T, val remaining: String)
 typealias  Parser<T> = (String) -> Result<T>
 
@@ -193,4 +191,26 @@ fun <T> opt(parser: Parser<T>): Parser<T?> {
     }
 
     return innerFn
+}
+
+fun pint(): Parser<Int> {
+    val digit = anyOf(('0'..'9').toList())
+    val digits = many(digit)
+    return mapP({ digits: ArrayList<Char> -> String(digits.toCharArray()).toInt() }, digits)
+}
+
+fun <T1, T2> getLeft(parser1: Parser<T1>, parser2: Parser<T2>): Parser<T1> {
+    val p = andThen(parser1, parser2)
+    return mapP({ pair: Pair<T1, T2> -> pair.first }, p)
+}
+
+fun <T1, T2> getRight(parser1: Parser<T1>, parser2: Parser<T2>): Parser<T2> {
+    val p = andThen(parser1, parser2)
+    return mapP({ pair: Pair<T1, T2> -> pair.second }, p)
+}
+
+fun <T1, T2, T3> between(ap: Parser<T1>, bp: Parser<T2>, cp: Parser<T3>): Parser<T2> {
+    val a = getRight(ap, bp)
+    val p = getLeft(a, cp)
+    return p
 }
